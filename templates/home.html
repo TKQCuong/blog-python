@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
+{% include 'flash-mes.html' %}
 {% block body %}
+
 <div class='container'>
     {% include 'newpost.html' %}
     {% for post in posts %}
@@ -13,4 +15,5 @@
     </div>
     {% endfor %}
 </div>
+
 {% endblock %}

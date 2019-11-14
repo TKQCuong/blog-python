@@ -18,16 +18,17 @@ db = SQLAlchemy(app)
 #SET UP FLASK-LOGIN
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "users.login"
+login_manager.login_view = "login"
+login_manager.login_message = "Please Sign In to access your blog"
 
 # DEFINING MODELS
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
+    # title = db.Column(db.String(150), nullable=False)
     body = db.Column(db.String, nullable=False)
-    author = db.Column(db.String(30), nullable=False)
-    created = db.Column(db.DateTime, server_default=db.func.now())
-    updated = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    # author = db.Column(db.String(30), nullable=False)
+    created = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
+    # updated = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
 db.create_all()
 
@@ -52,47 +53,42 @@ class RegistrationForm(FlaskForm):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
-    # accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
     submit = SubmitField("Send")
 
     def validate_email(form, field):
         user = User.query.filter_by(email=field.data).first()
         if user:
             raise ValidationError('Email taken')            
-
 db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
 
-# @app.route
-# @login_required
-# def logout():
-#     logout_user()
-#     return urlfor(login)
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You've Signed out !", 'success')
+    return redirect(url_for('login'))
 
 #LOGIN
-@app.route('/', methods=['GET', 'POST'])
-def log_in():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'POST':
-
         # import code; code.interact(local=dict(globals(), **locals()))
         user = User.query.filter_by(email = request.form['email']).first()
 
-        # if current_user.is_authenticated:
-        #    return redirect(url_for('profile'))
-
-        if user != request.form['email']:
-            flash("The password you've entered is incorrect !", 'danger')
-
         if not user:
-            flash("Your account does not exist, please sign up")
+            flash("Your account does not exist, please Sign up", 'warning')
             return redirect(url_for('register'))
 
         if user.check_password(request.form['password']):
+            login_user(user)
             flash("Welcome Back! {0}" .format(user.email), 'success')
-            return redirect(url_for('profile'))
+            return redirect(url_for('home'))
+        flash("The password or email you've entered is incorrect !", 'danger')
+
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -104,35 +100,34 @@ def register():
             user = User.query.filter_by(email = form.email.data).first()
             if user: 
                 flash("Your account have already existed, log in now")
-                return redirect(url_for('log_in'))
-
+                return redirect(url_for('login'))
             if not user:
                 user = User(email = form.email.data)
                 user.set_password(form.password.data)
                 db.session.add(user)
                 db.session.commit()
-                flash('Thanks for registering !!')
-                return redirect(url_for('log_in'))
+                flash('Thanks for registering !!', 'success')
+                return redirect(url_for('login'))
         else:
             for field,errors in form.errors.items():
                 print(field,errors)
     return render_template('register.html', form = form)
 
-@app.route('/profile',  methods=['GET', 'POST'])
-def profile():
-    return render_template('profile.html')
-
-# ADD New Entry
-@app.route('/newpost', methods=['GET', 'POST'])
-def new_post():
-    if request.method == "POST":
-        new_blog = Blog(title=request.form['title'], body=request.form['body'],
-                        author=request.form['author'])
-        db.session.add(new_blog)
-        db.session.commit()
-        return redirect(url_for('new_post'))
+@app.route('/')
+@login_required
+def home():
     posts = Blog.query.all()
     return render_template('home.html', posts = posts)
+
+# ADD New Entry
+@app.route('/newpost', methods=['POST'])
+def new_post():
+    if request.method == "POST":
+        new_blog = Blog(body=request.form['body'])
+        db.session.add(new_blog)
+        db.session.commit()
+        return redirect(url_for('home'))
+    # return render_template('newpost.html')
 
 #DELETE New Entry
 # @app.route('/blogs/<id>', methods=['GET','POST']) ## specify route with methods
