@@ -1,19 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home / Twister</title>
+    <link rel="shortcut icon" href="https://cdn.medusajuice.co.uk/wp-content/uploads/2017/12/twister-e-liquid.png" />
+    <link rel='stylesheet' href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="../static/home.css">
+</head>
+<body>
 {% extends 'base.html' %}
-
 {% include 'flash-mes.html' %}
 {% block body %}
 
-<div class='container'>
-    {% include 'newpost.html' %}
-    {% for post in posts %}
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">{{post.title}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{post.body}}</h6>
-            <p class="card-text">{{post.author}}</p>
-        </div>
+<!-- TEXT FIELD -->
+<div class="main-content">
+    <div class="controller-left">
+            <a href="{{ url_for('home') }}"><img src="https://cdn.medusajuice.co.uk/wp-content/uploads/2017/12/twister-e-liquid.png" alt="">
+        <ul>
+            <li>
+                <a href="{{ url_for('home') }}"><i class="fa fa-home circle-sidebar"></i></a>
+            </li>
+            <li>
+                <a href="{{url_for('home', filter='most-recent')}}"><i class="fas fa-sort"></i></a>
+            </li>
+        </ul>
+            <a class="nav-link" href="{{url_for('logout')}}"><i class="fas fa-sign-out-alt"></i></a>
     </div>
-    {% endfor %}
+
+<div class='container'>
+    <div class='create-post-div'>
+        <form method='POST' class='create-post-form' action={{url_for('new_post')}}>
+            <div class="home">
+                <h1>Home</h1>
+            </div>
+            <div class="inputAva">
+                <img src="{{ current_user.avatar_url }}">
+                <textarea type="text" class='create-post-input-home' name='body' rows="5" autofocus
+                    placeholder="What's happening, {{ current_user.name }}?"></textarea>
+            </div>
+        <div style="width:100%; " class="Post-section">
+            <div class="icon">
+                <i class="far fa-image"></i>
+                <i class="far fa-grin"></i>
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <div class="Post-button">
+                <button class="post-butt" type='submit'>Post</button>
+            </div>
+        </div>
+        </form>
+    </div>
+    <div style="height:10px; background-color: rgb(230, 236, 240); "></div>
+<!-- RENDER NEW POST -->
+    <div class='posts-container'>
+        {% for post in posts %}
+        <div class='single-post-container'>
+            <div class="card mb-3">
+                <div class="card-body1">
+                    <div class="title-content">
+                        <img src="http://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" alt="...">
+                        <h5 class="card-title">{{post.author.name}}</h5>
+                        <i class="fas fa-check-circle"></i>
+                        <p>@{{ post.author.name }}</p>
+                        <small style="font-style: italic; font-weight: 200;">. {{post.created_at}}</small>
+                    </div>
+                    <p class="card-text">{{post.body | safe}}</p>
+                </div>
+            </div>
+
+            <div class='single-post-footer'>
+                {% if post.author.id == current_user.id %}
+                    <form method="POST" action="{{url_for('single_post', id=post.id, action='edit')}}">
+                        <button class='btn btn-link'><i class="far fa-edit"></i></button>
+                    </form>
+                    <form method="POST" action="{{url_for('single_post', id=post.id, action='delete')}}">
+                        <button class='btn btn-link'><i class="far fa-trash-alt"></i></button>
+                    </form>
+                {% else %}
+                {% endif %}
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
+<div class="Trends-right">
+    <div class="sidebar-right">
+            <div class="trend-input">
+                <i class="fa fa-search" aria-hidden="true"></i>
+                <span class="ml-2">
+                <input type="text" placeholder="Search Twitter"
+                /></span>
+            </div>
+            <div class="yourTrend mt-3">
+                <div class="card" style="width: 18rem;">
+                <div class="card-header trend-font-awesome">
+                    <b>Trends for you</b><span class="trend-circle-cog"><i class="fa fa-cog"></i></span>
+                </div>
+                <ul class="list-group list-group-flush ">
+                    <li class="list-group-item trend-hover">#Vietnam</li>
+                    <li class="list-group-item trend-hover">Hong Kong</li>
+                    <li class="list-group-item trend-hover">China</li>
+                    <li class="list-group-item trend-hover">Ha Noi</li>
+                    <li class="list-group-item trend-hover">Malaysia</li>
+                    <li class="list-group-item trend-hover"><a href="#">Show more</a></li>
+                </ul>
+                </div>
+            </div>
+                <div class="copyright">
+                <ul>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Privacy policy</a></li>
+                    <li><a href="#">Cookies</a></li>
+                    <li><a href="#">Ads info</a></li>
+                </ul>
+                <ul>
+                    <li><a href="#">More</a></li>
+                    <li><a href="#">&#169; 2019 Twitter, Inc.</a></li>
+                </ul>
+            </div>
+            </div>
+</div>
+</div>
+
+
+
 {% endblock %}
+</body>
+</html>

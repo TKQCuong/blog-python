@@ -4,6 +4,7 @@ from flask_login import UserMixin, LoginManager, current_user, login_user, logou
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, validators, PasswordField, SubmitField, ValidationError, BooleanField
+import fontawesome as fa
 
 # SETUP AND CONFIG FLASK APP
 app = Flask(__name__)
@@ -21,21 +22,33 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message = "Please Sign In to access your blog"
 
-# DEFINING MODELS
-class Blog(db.Model):
+class Comment(db.Model):
+    # __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
-    # title = db.Column(db.String(150), nullable=False)
     body = db.Column(db.String, nullable=False)
-    # author = db.Column(db.String(30), nullable=False)
-    created = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
-    # updated = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    user_id = db.Column(db.Integer, nullable=False)
+    post_id = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now()) 
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
+db.create_all()
+
+class Post(db.Model):
+    # __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now()) 
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    
 db.create_all()
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), nullable=False, unique=True)
     email = db.Column(db.String(200), nullable=False, unique=True)
     password = db.Column(db.String(20), nullable=False)
+    avatar_url = db.Column(db.Text, nullable=False)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -47,18 +60,20 @@ db.create_all()
 
 ## FORM WTF
 class RegistrationForm(FlaskForm):
+    name = StringField('Username', [validators.Length(min=6, max=35)])
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('New Password', [
-        validators.DataRequired(),
+        validators.DataRequired(), validators.Length(min=8),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
+    avatar_url = StringField('Your Avatar', [validators.DataRequired()])
     submit = SubmitField("Send")
 
     def validate_email(form, field):
         user = User.query.filter_by(email=field.data).first()
         if user:
-            raise ValidationError('Email taken')            
+            raise ValidationError('Email taken !')            
 db.create_all()
 
 @login_manager.user_loader
@@ -70,7 +85,7 @@ def load_user(user_id):
 def logout():
     logout_user()
     flash("You've Signed out !", 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('landingpage'))
 
 #LOGIN
 @app.route('/login', methods=['GET', 'POST'])
@@ -80,14 +95,17 @@ def login():
         user = User.query.filter_by(email = request.form['email']).first()
 
         if not user:
-            flash("Your account does not exist, please Sign up", 'warning')
-            return redirect(url_for('register'))
+            flash("Your account does not exist, please Sign up !", 'warning')
+            return redirect(url_for('login'))
 
         if user.check_password(request.form['password']):
             login_user(user)
-            flash("Welcome Back! {0}" .format(user.email), 'success')
+            flash("Welcome Back! {0}" .format(user.name), 'success')
             return redirect(url_for('home'))
         flash("The password or email you've entered is incorrect !", 'danger')
+
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
 
     return render_template('login.html')
 
@@ -95,14 +113,13 @@ def login():
 def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST' :
-        print("POST", form.email.data, form.password.data, form.confirm.data)
         if form.validate_on_submit():
             user = User.query.filter_by(email = form.email.data).first()
             if user: 
                 flash("Your account have already existed, log in now")
-                return redirect(url_for('login'))
+                return redirect(url_for('register'))
             if not user:
-                user = User(email = form.email.data)
+                user = User(email = form.email.data, name = form.name.data, avatar_url = form.avatar_url.data)
                 user.set_password(form.password.data)
                 db.session.add(user)
                 db.session.commit()
@@ -111,36 +128,71 @@ def register():
         else:
             for field,errors in form.errors.items():
                 print(field,errors)
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     return render_template('register.html', form = form)
 
 @app.route('/')
+def landingpage():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    return render_template('landingpage.html')
+
+@app.route('/home')
 @login_required
 def home():
-    posts = Blog.query.all()
+    posts = Post.query.all()
+    if request.args.get('filter') == 'most-recent':
+        posts = Post.query.order_by(Post.created_at.desc()).all()
+    for post in posts:
+        post.author = User.query.filter_by(id=post.user_id).first()
     return render_template('home.html', posts = posts)
 
 # ADD New Entry
 @app.route('/newpost', methods=['POST'])
 def new_post():
     if request.method == "POST":
-        new_blog = Blog(body=request.form['body'])
-        db.session.add(new_blog)
-        db.session.commit()
+        new_blog = Post(body=request.form['body'], user_id=current_user.id)
+    db.session.add(new_blog)
+    db.session.commit()
+    return redirect(url_for('home'))
+
+@app.route('/posts/<id>', methods=['POST', 'GET'])
+def single_post(id):
+    action = request.args.get('action')
+    print(action)
+    post = Post.query.get(id)
+    comments = Comment.query.filter_by(post_id = post.id).all()
+    if not post:
+        flash('Post not found', 'warning')
         return redirect(url_for('home'))
-    # return render_template('newpost.html')
+    post.author = User.query.get(post.user_id)
+    if request.method=="POST":
+        if post.user_id != current_user.id:
+            flash('not allow to do this', 'danger')
+            return redirect(url_for('home'))
+        if action == 'delete':
+            db.session.delete(post)
+            db.session.commit()
+            return redirect(url_for('home'))
+        elif action == 'update':
+            post.body = request.form['body']
+            db.session.commit()
+            return redirect(url_for('home'))
+            return redirect(url_for('single_post',id=id))
+        elif action == 'edit':
+            return render_template('single_post.html', post = post, action=action)
+    if not action:
+        action = 'view'    
+    return render_template('single_post.html', post = post, action=action, comments=comments)
 
-#DELETE New Entry
-# @app.route('/blogs/<id>', methods=['GET','POST']) ## specify route with methods
-# def delete_entry(id):  ## grabing id from route to function
-#     if request.method == "POST" :  ## check if the request method is POST, we execute the following logic
-#         post = Blog.query.filter_by(id=id).first() ## select a post from database base on the ID we got from URL
-#         if not post:  ## if there is no such post, we stop everything 
-#             return "THERE IS NO SUCH POST"
-#         db.session.delete(post)  ## else: there's an entry with that ID, we delete it
-#         db.session.commit()
-#         return redirect(url_for('new_post')) ## then redirect to our root route or function new_post
-#     return "NOT ALLOWED"  ## guarding against incorrect request method (being nice!)
-
+@app.route('/posts/<id>/comments', methods=['POST'])
+def create_comment(id):
+    comment = Comment(user_id = current_user.id, post_id = id, body = request.form['body'])
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('single_post', id = id))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,53 @@
+body {
+    background: #e6ecf0;
+    margin: 0;
+    position: relative;
+    margin-top: -20px;
+}
+.global-nav {
+    background: #fff;
+    border-bottom: 2px solid rgba(0,0,0,0.25);
+    height: 46px;
+    position: relative;
+    width: 100%;
+}
+.container {
+    width: auto;
+    max-width: 865px;
+    height: 46px;
+    position: relative;
+    margin: 0 auto;
+    font-family: "Segoe UI",Arial,sans-serif;
+
+}
+.container ul {
+    word-spacing: 15px;
+    padding: 0 14px 0 4px;
+    padding-top: 5px;
+}
+.container li {
+    list-style: none;
+    display: inline;
+    margin-left: 3px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #66757f;;
+    line-height: 20px;
+}
+
+.container li a {
+    text-decoration: none;
+    color: #66757f;
+}
+
+.container li a:hover {
+    border-bottom-style: solid;
+    border-bottom-color: #1da1f2;
+    border-bottom-width: 2px;
+} 
+
+img {
+    width: 25px;
+    position: relative;
+}

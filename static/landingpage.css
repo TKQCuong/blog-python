@@ -1,0 +1,114 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.main-landing {
+    display: flex;
+}
+
+.introduction {
+    flex: 1;
+    background-color: #1da1f2;
+    color: red;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.text-intro {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+    margin: 48px auto;
+    color: #fff;
+    font-family: "Segoe UI",Arial,sans-serif;
+    max-width: 440px;
+    padding: 0 16px;
+    position: relative;
+    line-height: 3rem;
+}
+
+.main {
+    flex: 1;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    background-color:#fff;
+    justify-content: center;
+
+}
+
+.content {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+    margin: 120px auto;
+    font-family: "Segoe UI",Arial,sans-serif;
+    max-width: 400px;
+    padding: 0 16px;
+    position: relative;
+    line-height: 3rem;
+}
+
+.text-main h1{
+    font-size: 27px;
+    line-height: 32px;
+    margin-bottom: 3rem;
+}
+
+.text-main img {
+    width: 50px;
+    position: relative;
+}
+
+.button-main p {
+    color: #14171a;
+    font-size: 18px;
+    line-height: 24px;
+    margin: 16px auto;
+}
+
+.signup, .signup:visited {
+    border-radius: 100px;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 8px 160px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #1da1f2;
+    border: 1px solid #1da1f2;
+    color: #fff;
+    text-decoration: none;
+}
+
+.signup:hover {
+    background-color: #4169E1;
+    text-decoration: none;
+}
+
+.login {
+    border-radius: 100px;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 8px 165px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #fff;
+    border: 1px solid #1da1f2;
+    color: #1da1f2;
+    text-decoration: none;
+}
+
+.login:hover {
+    background-color: #F5F5F5;
+    text-decoration: none;
+}

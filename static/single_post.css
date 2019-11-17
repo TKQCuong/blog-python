@@ -1,0 +1,25 @@
+.global-nav ul{
+    display: flex;
+} 
+.global-nav {
+    height: 49px !important;
+}
+.global-nav .nav-link {
+    display: none;
+}
+.global-nav a {
+    font-size: 20px;
+}
+
+.global-nav .container {
+    border-bottom: none;
+}
+
+.create-comment-div .title-content {
+    padding-left: 1rem;
+}
+
+.create-comment-div .card-text {
+    padding-left: 5.5rem;
+    padding-bottom: 1rem;
+}

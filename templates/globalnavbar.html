@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Twister</title>
+    <link rel="stylesheet" href="../static/navbar.css">
+</head>
+<body>
+    <div class="global-nav">
+        <div class='container'>
+            <ul>
+                {% if current_user.is_authenticated %}
+                    <img src="https://cdn.medusajuice.co.uk/wp-content/uploads/2017/12/twister-e-liquid.png" alt=""><li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a class="nav-link" href="{{url_for('logout')}}">Log Out</a></li>
+                {% else %}
+                    <img src="https://cdn.medusajuice.co.uk/wp-content/uploads/2017/12/twister-e-liquid.png" alt=""><li><a href="{{ url_for('landingpage') }}">Home</a></li>
+                    <li>About</li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </div>
+    
+</body>
+</html>

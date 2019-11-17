@@ -1,0 +1,75 @@
+body {
+    padding-top: 20px;
+}
+
+.form-signin {
+    width: 52rem;
+    font-family: "Segoe UI",Arial,sans-serif;
+    background-color: #fff;
+    margin-top: -40px;
+    border: 0.5px solid rgba(0,0,0,0.25);
+    padding-top: 40px;
+    padding-left: 50px;
+    border-bottom: 0.1px solid rgba(0,0,0,0.25);
+}
+.form-control {
+    max-width: 300px;
+    width: 97%;
+    border: 1px solid #e6ecf0;
+    border-radius: 3px;
+    background-color: rgb(232, 240, 254) !important;
+    color: #495057;
+    height: 2rem;
+    margin-left: 60px;
+    margin-bottom: 14px;
+}
+
+.h3  {
+    margin-left: 60px;
+    font-size: 24px;
+}
+
+.checkbox {
+    margin-left: 60px;
+}
+.both {
+    display: flex;
+    margin-top: 1.8rem;
+}
+
+.both label {
+    padding-top: 10px;
+}
+
+.sigin-butt {
+    background-color: #1da1f2;
+    border: 1px solid #1da1f2;
+    color: #fff;
+    border-radius: 100px;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 6px 16px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: 5rem;
+    margin-right: 1rem;
+    
+}
+
+.signup-field {
+    background-color: #f5f8fa;
+    padding: 20px 10px 20px 113px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #657786;
+    margin: 0 auto;
+    border: 0.5px solid rgba(0,0,0,0.25);
+    width: 52rem;
+    margin-right: 5px;
+    display: flex;
+    
+}

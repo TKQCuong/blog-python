@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://kit.fontawesome.com/yourcode.js"></script>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <title>Twister. It's what's happening.</title>
+    <link rel="shortcut icon" href="https://cdn.medusajuice.co.uk/wp-content/uploads/2017/12/twister-e-liquid.png" />
+    <link rel='stylesheet' href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="../static/landingpage.css">
+    
+</head>
+<body>
+
+    <div class="main-landing">
+        <div class="introduction">
+            <div class="text-intro">
+                <p>Follow your interests.</p>
+                <p>Hear what people are talking about.</p>
+                <p>Join the conversation.</p>
+            </div>
+        </div>
+        <div class="main">
+            <div class="content">
+                <div class="text-main">
+                    <img src="https://cdn.medusajuice.co.uk/wp-content/uploads/2017/12/twister-e-liquid.png" alt="">
+                    <h1><i class="fas fa-search"></i>See what’s happening in the world right now</h1>
+                </div>
+                <div class="button-main">
+                    <p>Join Twister today.</p>
+                    <a class="signup" href="{{ url_for('register') }}">Sign up</a><br>
+                    <a class="login" href="{{ url_for('login') }}">Log in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>

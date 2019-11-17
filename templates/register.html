@@ -1,13 +1,37 @@
-{% from "_formhelpers.html" import render_field %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<title>Sign up</title>
+<link rel="shortcut icon" href="https://cdn.medusajuice.co.uk/wp-content/uploads/2017/12/twister-e-liquid.png" />
+<link rel="stylesheet" href="../static/register.css">
+</head>
+{% include 'globalnavbar.html' %}
+<body>
+    {% include 'flash-mes.html' %} 
+    
+    {% from "_formhelpers.html" import render_field %}
+    <form method="POST">
+        <h1>Create a new account</h1>
+        <dl>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.name) }}
+        {{ render_field(form.email) }}
+        {{ render_field(form.password) }}
+        {{ render_field(form.confirm) }}
+        {{ render_field(form.avatar_url)}}
+        </dl>
+        <button class="btn btn-lg btn-primary btn-block register-butt" type="submit">
+            Register
+        </button>
+        <div class="jump-to-signin">
+            <p>Already have Twister account?&nbsp&nbsp</p><a href="{{ url_for('login') }}">Sign in now »</a>
+        </div>
+    </form>
 
-{% include 'flash-mes.html' %}
-<h1>Create a new account</h1>
-<form method='POST'>
-    <dl>
-    {{ form.hidden_tag() }}
-    {{ render_field(form.email) }}
-    {{ render_field(form.password) }}
-    {{ render_field(form.confirm) }}
-    </dl>
-    <p><input type=submit value=Register>
-</form>
+
+</body>
+</html>
+
