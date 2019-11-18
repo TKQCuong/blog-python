@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms import StringField, validators, PasswordField, SubmitField, ValidationError, BooleanField
 import fontawesome as fa
+from flask_migrate import Migrate
 
 # SETUP AND CONFIG FLASK APP
 app = Flask(__name__)
@@ -21,6 +22,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message = "Please Sign In to access your blog"
+migrate = Migrate(app, db)
+
 
 class Comment(db.Model):
     # __tablename__ = 'comments'
@@ -40,6 +43,8 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now()) 
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    view_count = db.Column(db.Integer, default=0)
+
     
 db.create_all()
 
@@ -163,6 +168,9 @@ def single_post(id):
     action = request.args.get('action')
     print(action)
     post = Post.query.get(id)
+    post.view_count = post.view_count + 1
+    db.session.add(post)
+    db.session.commit()
     comments = Comment.query.filter_by(post_id = post.id).all()
     if not post:
         flash('Post not found', 'warning')
