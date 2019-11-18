@@ -20,18 +20,18 @@
 
             <div class="create-comment-div">
                     {% for comment in comments  %}
-        <div class="card mb-3">
-            <div class="card-body1">
-                <div class="title-content">
-                    <img src="http://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" alt="...">
-                    <h5 class="card-title">{{post.author.name}}</h5>
-                    <i class="fas fa-check-circle"></i>
-                    <p>@{{ post.author.name }}</p>
-                    <small style="font-style: italic; font-weight: 200;">. {{post.created_at}}</small>
-                </div>
-                <p class="card-text">{{comment.body}}</p>
-        </div>
-        {% endfor %}
+                    <div class="card mb-3">
+                        <div class="card-body1">
+                            <div class="title-content">
+                                <img src="http://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" alt="...">
+                                <h5 class="card-title">{{post.author.name}}</h5>
+                                <i class="fas fa-check-circle"></i>
+                                <p>@{{ post.author.name }}</p>
+                                <small style="font-style: italic; font-weight: 200;">. {{post.created_at}}</small>
+                            </div>
+                            <p class="card-text">{{comment.body}}</p>
+                    {% endfor %}
+            </div>
                     <form method='POST' class='create-post-form' action="/posts/{{post.id}}/comments">
                         <input class='create-post-input' name='body' rows="4" autofocus
                         placeholder="What do you think, {{ current_user.name }}?">
