@@ -23,3 +23,10 @@
     padding-left: 5.5rem;
     padding-bottom: 1rem;
 }
+
+.view_content{
+    display:flex;
+    justify-content: flex-end;
+    margin-right: 847px;
+    margin-bottom: 40px;
+}

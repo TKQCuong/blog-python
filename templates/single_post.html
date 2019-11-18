@@ -14,6 +14,7 @@
                         <p>@{{ post.author.name }}</p>
                         <small style="font-style: italic; font-weight: 200;">. {{post.created_at}}</small>
                     </div>
+                    <strong class="view_content">Total Views: {{post.view_count}}</strong>
                     <p class="card-text">{{post.body | safe}}</a></p>
                 </div>
             </div>

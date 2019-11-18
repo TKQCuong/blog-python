@@ -368,3 +368,11 @@ text-decoration: none;
     border: solid;
     background-color: #F0F8FF;
 }
+
+.view-content-home{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
