@@ -34,7 +34,7 @@
                     {% endfor %}
             </div>
                     <form method='POST' class='create-post-form' action="/posts/{{post.id}}/comments">
-                        <input class='create-post-input' name='body' rows="4" autofocus
+                        <input class='create-post-input-comment' name='body' rows="4" autofocus
                         placeholder="What do you think, {{ current_user.name }}?">
                         <div style="padding-left: 32rem; padding-top: 0.7rem">
                             <button class='btn btn-primary' type='submit'>Post</button>
@@ -47,7 +47,7 @@
     {% else %}
     <div class='create-post-div'>
         <form method='POST' class='create-post-form' action="{{url_for('single_post', id=post.id, action="update")}}">
-            <textarea class='create-post-input' name='body' rows="4" autofocus
+            <textarea class='create-post-input' name='body' rows="4" 
             placeholder="Let's edit your post, {{ current_user.name }}?"></textarea>
             <div style="padding-left: 32rem; padding-top: 0.7rem">
                 <button class='btn btn-primary' type='submit'>Post</button>

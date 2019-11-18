@@ -44,15 +44,10 @@ class Post(db.Model):
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     view_count = db.Column(db.Integer, default=0)
 
-
-
-
 likes = db.Table('likes',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True)
-
 )
-
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -68,7 +63,6 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
-
 
 ## FORM WTF
 class RegistrationForm(FlaskForm):
@@ -155,8 +149,10 @@ def landingpage():
 @login_required
 def home():
     posts = Post.query.all()
-    if request.args.get('filter') == 'most-recent':
-        posts = Post.query.order_by(Post.created_at.desc()).all()
+    posts = Post.query.order_by(Post.created_at.desc()).all()
+    if request.args.get('filter') == 'most-oldest':
+        posts = Post.query.order_by(Post.created_at.asc()).all()
+
     for post in posts:
         post.author = User.query.filter_by(id=post.user_id).first()
     return render_template('home.html', posts = posts)
@@ -213,7 +209,6 @@ def create_comment(id):
 @app.route('/posts/<id>/like', methods=['POST'])
 def like(id):
     post = Post.query.get(id)
-   
     if post in current_user.likes_post:
         current_user.likes_post.remove(post)
     else:
@@ -221,7 +216,6 @@ def like(id):
     db.session.commit()
     return redirect(url_for('home')
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)
