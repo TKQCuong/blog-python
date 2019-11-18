@@ -79,6 +79,17 @@
                     <form method="POST" action="{{url_for('single_post', id=post.id, action='delete')}}">
                         <button class='btn btn-link'><i class="far fa-trash-alt"></i></button>
                     </form>
+                    {% if post in current_user.likes_post %}
+                    <form method='POST' action="{{url_for('like', id=post.id)}}">
+                        <button type="submit" class="btn btn-primary">UNLIKE</button>
+                    </form>
+                    {% else %}
+                    <form method='POST' action="{{url_for('like', id=post.id)}}">
+                            <button type="submit" class="btn btn-primary">LIKE</button>
+                    </form>
+                    {% endif %}
+
+
                 {% else %}
                 {% endif %}
 

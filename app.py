@@ -34,19 +34,25 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now()) 
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
-db.create_all()
 
 class Post(db.Model):
     # __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now()) 
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
     view_count = db.Column(db.Integer, default=0)
 
-    
-db.create_all()
+
+
+
+likes = db.Table('likes',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True)
+
+)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -54,6 +60,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(200), nullable=False, unique=True)
     password = db.Column(db.String(20), nullable=False)
     avatar_url = db.Column(db.Text, nullable=False)
+    post = db.relationship('Post', backref='user', lazy=True)
+    likes_post = db.relationship('Post', secondary='likes', backref='who_likes_post', lazy=True)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -61,7 +69,6 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-db.create_all()
 
 ## FORM WTF
 class RegistrationForm(FlaskForm):
@@ -201,6 +208,19 @@ def create_comment(id):
     db.session.add(comment)
     db.session.commit()
     return redirect(url_for('single_post', id = id))
+
+
+@app.route('/posts/<id>/like', methods=['POST'])
+def like(id):
+    post = Post.query.get(id)
+   
+    if post in current_user.likes_post:
+        current_user.likes_post.remove(post)
+    else:
+        current_user.likes_post.append(post)
+    db.session.commit()
+    return redirect(url_for('home')
+    )
 
 
 if __name__ == "__main__":
