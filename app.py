@@ -13,7 +13,7 @@ import os
 
 # SETUP AND CONFIG FLASK APP
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']= os.environ.get('DATABASE_URL') or os.environ.get('LOCAL_DB')
+app.config['SQLALCHEMY_DATABASE_URI']= os.environ.get('DATABASE_URL')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'My secret key'
