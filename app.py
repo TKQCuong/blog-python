@@ -152,7 +152,6 @@ def home():
     posts = Post.query.order_by(Post.created_at.desc()).all()
     if request.args.get('filter') == 'most-oldest':
         posts = Post.query.order_by(Post.created_at.asc()).all()
-
     for post in posts:
         post.author = User.query.filter_by(id=post.user_id).first()
     return render_template('home.html', posts = posts)
@@ -171,8 +170,7 @@ def single_post(id):
     action = request.args.get('action')
     print(action)
     post = Post.query.get(id)
-    post.view_count = post.view_count + 1
-    db.session.add(post)
+    post.view_count += 1
     db.session.commit()
     comments = Comment.query.filter_by(post_id = post.id).all()
     if not post:
@@ -193,18 +191,19 @@ def single_post(id):
             return redirect(url_for('home'))
             return redirect(url_for('single_post',id=id))
         elif action == 'edit':
+            for comment in comments:
+                comment.user_name = User.query.get(comment.user_id).name
             return render_template('single_post.html', post = post, action=action)
     if not action:
-        action = 'view'    
+        action = 'view'  
     return render_template('single_post.html', post = post, action=action, comments=comments)
 
-@app.route('/posts/<id>/comments', methods=['POST'])
+@app.route('/posts/<id>/comments', methods=['GET','POST'])
 def create_comment(id):
     comment = Comment(user_id = current_user.id, post_id = id, body = request.form['body'])
     db.session.add(comment)
     db.session.commit()
-    return redirect(url_for('single_post', id = id))
-
+    return redirect(url_for('single_post', id = id, action = 'view'))
 
 @app.route('/posts/<id>/like', methods=['POST'])
 def like(id):

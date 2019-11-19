@@ -4,6 +4,7 @@
 {% extends 'base.html' %}
 {% include 'globalnavbar.html' %}
 {% block body %}
+
 <div class='single-post-container'>
         <div class="card mb-3">
                 <div class="card-body">
@@ -17,43 +18,48 @@
                     <strong class="view_content">Total Views: {{post.view_count}}</strong>
                     <p class="card-text">{{post.body | safe}}</a></p>
                 </div>
-            </div>
+        </div>
 
-            <div class="create-comment-div">
-                    {% for comment in comments  %}
-                    <div class="card mb-3">
-                        <div class="card-body1">
-                            <div class="title-content">
-                                <img src="http://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" alt="...">
-                                <h5 class="card-title">{{post.author.name}}</h5>
-                                <i class="fas fa-check-circle"></i>
-                                <p>@{{ post.author.name }}</p>
-                                <small style="font-style: italic; font-weight: 200;">. {{post.created_at}}</small>
-                            </div>
-                            <p class="card-text">{{comment.body}}</p>
-                    {% endfor %}
-            </div>
-                    <form method='POST' class='create-post-form' action="/posts/{{post.id}}/comments">
-                        <input class='create-post-input-comment' name='body' rows="4" autofocus
-                        placeholder="What do you think, {{ current_user.name }}?">
-                        <div style="padding-left: 32rem; padding-top: 0.7rem">
-                            <button class='btn btn-primary' type='submit'>Post</button>
-                        </div>
-                    </form>
-                </div>
+        
+        
+        <div class="create-comment-div">
+                <form method='POST' class='create-post-form' action="/posts/{{post.id}}/comments">
+                    <input class='create-post-input-comment' name='body' rows="4" autofocus
+                    placeholder="What do you think, {{ current_user.name }}?">
+                    <div style="padding-left: 32rem; padding-top: 0.7rem">
+                        <button class='btn btn-primary' type='submit'>Post</button>
+                    </div>
+                </form>
+        </div>
             
     {% if action == "view" %}
         
+
     {% else %}
-    <div class='create-post-div'>
-        <form method='POST' class='create-post-form' action="{{url_for('single_post', id=post.id, action="update")}}">
-            <textarea class='create-post-input' name='body' rows="4" 
-            placeholder="Let's edit your post, {{ current_user.name }}?"></textarea>
-            <div style="padding-left: 32rem; padding-top: 0.7rem">
-                <button class='btn btn-primary' type='submit'>Post</button>
+        <div class='create-post-div'>
+            <form method='POST' class='create-post-form' action="{{url_for('single_post', id=post.id, action="update")}}">
+                <textarea class='create-post-input' name='body' rows="4" 
+                placeholder="Let's edit your post, {{ current_user.name }}?"></textarea>
+                <div style="padding-left: 32rem; padding-top: 0.7rem">
+                    <button class='btn btn-primary' type='submit'>Post</button>
+                </div>
+            </form>
+            {% for comment in comments  %}
+            <div class="card mb-3">
+                <div class="card-body1">
+                    <div class="title-content">
+                        <img src="http://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" alt="...">
+                        <h5 class="card-title">{{post.author.name}}</h5>
+                        <i class="fas fa-check-circle"></i>
+                        <p>@{{ post.author.name }}</p>
+                        <small style="font-style: italic; font-weight: 200;">. {{post.created_at}}</small>
+                    </div>
+                </div>
+                    <p class="card-text">{{comment.body}}</p>
             </div>
-        </form>
-    </div>
+            {% endfor %}
+        </div>
     {% endif %}
+
 </div>
 {% endblock %}

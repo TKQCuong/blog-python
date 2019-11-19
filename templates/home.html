@@ -22,9 +22,9 @@
             <li>
                 <a href="{{ url_for('home') }}"><i class="fa fa-home circle-sidebar"></i></a>
             </li>
-                <li>
-                    <a href="{{url_for('home', filter='most-oldest')}}"><i class="fas fa-sort"></i></a>
-                </li>
+            <li>
+                <a href="{{url_for('home', filter='most-oldest')}}"><i class="fas fa-sort"></i></a>
+            </li>
         </ul>
             <a class="nav-link" href="{{url_for('logout')}}"><i class="fas fa-sign-out-alt"></i></a>
     </div>
@@ -53,6 +53,7 @@
         </form>
     </div>
     <div style="height:10px; background-color: rgb(230, 236, 240); "></div>
+    
 <!-- RENDER NEW POST -->
     <div class='posts-container'>
         {% for post in posts %}
